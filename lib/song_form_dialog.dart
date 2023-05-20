@@ -4,10 +4,12 @@ import 'model/song.dart';
 
 class SongFormDialog extends StatelessWidget {
   final void Function( Song ) saveSong ;
+  final String? initialSrc ;
 
   const SongFormDialog( {
     super.key,
     required this.saveSong,
+    this.initialSrc,
   } );
 
   @override
@@ -81,11 +83,13 @@ class SongFormDialog extends StatelessWidget {
 
 class TextInputField extends StatelessWidget {
   final Widget label;
+  final String? content;
   final Function( String )? onChanged;
 
   const TextInputField({
     super.key,
     required this.label,
+    this.content,
     this.onChanged,
   } );
 
@@ -97,6 +101,11 @@ class TextInputField extends StatelessWidget {
         border: const OutlineInputBorder(),
       ),
       onChanged: onChanged,
+      controller: content == null
+        ? null
+        : TextEditingController.fromValue(
+            TextEditingValue( text: content! )
+          ),
     );
   }
 }
