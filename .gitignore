@@ -51,3 +51,5 @@ pubspec.lock
 test/
 web/
 windows/
+
+.vscode
