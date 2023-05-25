@@ -1,6 +1,14 @@
 class Song {
   String? id ;
-  String name, src ;
+  late String name, src ;
 
   Song( this.name, this.src ) ;
+
+  Song.populate( Map< String, dynamic > data ) {
+    throw UnimplementedError() ;
+  }
+
+  Map< String, dynamic > dump() {
+    throw UnimplementedError() ;
+  }
 }
