@@ -1,37 +1,58 @@
-import '../json_database.dart';
+import 'package:uuid/uuid.dart';
 
+import '../json_database.dart';
 import 'song.dart';
 
 class SongRepository {
-  static const _entityName = 'songs' ;
-  final JsonDb db ; // implement
+  static const _entityName   = 'songs' ;
+  static const _entityPKName = 'id' ;
+
+  JsonDb db ; // implement
 
   static bool dontFilter( element ) => true ;
 
-  const SongRepository( this.db ) ;
+  SongRepository( this.db ) ;
 
   Song? loadFromId( final String id ) {
-    final songs = db.getEntitySet( _entityName ) ;
-    final song  = songs.firstWhere( ( song ) )
-    final element  = elements.firstWhere( ( element ) => element.getString( 'id' ) == id ) ;
-    if ( element == null ) {
+    var songs = db.getEntitySet( _entityName ) ;
+    var songWasntFound = false ;
+    var song = songs.firstWhere(
+      ( song ) => ( song[ 'id' ] as String ) == id,
+      orElse: () {
+        songWasntFound = true ;
+        return songs.first ;
+      }
+    ) ;
+    if ( songWasntFound ) {
       return null ;
     }
 
-    return Song.populate( element ) ;
+    return Song.populate( song ) ;
   }
 
   List< Song > loadCollection( {
     bool Function( Song ) filter = dontFilter,
   } ) {
-    return db.getEntitySet( _entityName ).where( filter ) ;
+    return db.getEntitySet( _entityName )
+             .map( Song.populate )
+             .where( filter )
+             .toList() ;
   }
 
-  Song save( final Song song ) {
+  Song save( Song song ) {
+    song.id ??= ( const Uuid() ).v4() ;
+    bool ok = db.saveEntity(
+      entityName: _entityName,
+      pkName:     _entityPKName,
+      data:       song.dump()
+    ) ;
+    if ( !ok ) {
+      song.id = null ;
+    }
     return song ;
   }
 
-  bool delete( final Song song ) {
+  bool delete( Song song ) {
     return false ;
   }
 }

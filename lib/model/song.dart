@@ -5,10 +5,16 @@ class Song {
   Song( this.name, this.src ) ;
 
   Song.populate( Map< String, dynamic > data ) {
-    throw UnimplementedError() ;
+    id =   data[ 'id' ] as String ;
+    name = data[ 'name' ] as String ;
+    src =  data[ 'src' ] as String ;
   }
 
   Map< String, dynamic > dump() {
-    throw UnimplementedError() ;
+    return {
+      'id':   id,
+      'name': name,
+      'src':  src,
+    } ;
   }
 }
