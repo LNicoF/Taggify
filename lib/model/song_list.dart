@@ -1,7 +1,7 @@
 import 'song.dart';
 
 class SongList {
-  var songs = < Song >[
+  var songs = const < Song >[
   ] ;
 
   int getIndex( final Song song ) {
