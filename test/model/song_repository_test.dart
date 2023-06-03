@@ -1,24 +1,12 @@
+import 'dart:io';
+
 import 'package:taggify/json_database.dart';
 import 'package:taggify/model/song.dart';
 import 'package:taggify/model/song_repository.dart';
 
-void main() {
-  final db = JsonDb.fromString( ''' {
-    "entities": {
-      "songs": [
-        {
-          "id": "123",
-          "name": "Bad Wolves Zombie",
-          "src": "/path/to/brains"
-        },
-        {
-          "id": "1234",
-          "name": "Legends never die",
-          "src": "/path/to/obesity"
-        }
-      ]
-    }
-  } ''' ) ;
+void main() async {
+  var jsonFile = File( '/home/clnico/Documents/dart/flutter/taggify/00/taggify/test/model/db_example.json' ) ;
+  final db = JsonDb.fromString( await jsonFile.readAsString() ) ;
 
   final repo = SongRepository( db ) ;
   logState( repo ) ;
@@ -26,6 +14,8 @@ void main() {
   song = repo.save( song ) ;
   print( song.dump() ) ;
   logState( repo ) ;
+
+  jsonFile = await jsonFile.writeAsString( await db.dump() ) ;
 }
 
 void logState( SongRepository repo ) {
