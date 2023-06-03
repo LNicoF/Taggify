@@ -12,12 +12,8 @@ class JsonDb {
     content = jsonDecode(initialContent) as JsonObject;
   }
 
-  JsonDb.fromFile(File file) {
-    throw UnimplementedError;
-  }
-
   Future<String> dump() async {
-    throw UnimplementedError;
+    return jsonEncode( content ) ;
   }
 
   void dumpIntoFile(File file) async {
@@ -26,15 +22,15 @@ class JsonDb {
 
   /// Returns the [entityName] entity set
   Set<JsonObject> getEntitySet(final String entityName) {
-    return _DbOperation(content: content, entityName: entityName)
-        .getEntitySet();
+    final operation = _DbOperation(content: content, entityName: entityName) ;
+    return Set.of( operation.entityList.map((e) => e as JsonObject)) ;
   }
 
   /// Saves the data in [data] into the entity set
   /// [entityName], which's primary key is [pkName]
   bool saveEntity({
-    required String entityName,
-    required String pkName,
+    required String     entityName,
+    required String     pkName,
     required JsonObject data,
   }) {
     if (data[pkName] == null) {
@@ -48,9 +44,10 @@ class JsonDb {
     );
 
     if (entity == null) {
-      return _DbOperation(
+      final res = _DbOperation(
         content: content, entityName: entityName
       ).insert( data, pkName: pkName) ;
+      return res ;
     }
     return _updateEntity(entity: entity, newData: data);
   }
@@ -87,8 +84,8 @@ class _DbOperation {
   JsonObject content;
   final String entityName;
 
-  List< JsonObject > get entityList
-    => (['entities'] as JsonObject)[entityName] as List< JsonObject > ;
+  List get entityList
+    => ( (content['entities'] as JsonObject)[entityName] as List ) ;
 
   _DbOperation({
     required this.content,
@@ -111,8 +108,9 @@ class _DbOperation {
   }
 
   bool insert( JsonObject data, { required String pkName } ) {
-    if ( entityList.where( ( element ) => element[ pkName ] )
-                   .isNotEmpty ) {
+    if ( entityList.where(
+      ( element ) => element[ pkName ] == data[ pkName ]
+    ).isNotEmpty ) {
       return false ;
     }
 

@@ -28,7 +28,7 @@ void main() {
   logState( repo ) ;
 }
 
-void logState( repo ) {
+void logState( SongRepository repo ) {
   print( repo.loadCollection()
              .map( ( song ) => song.dump() )
              .toList() ) ;
