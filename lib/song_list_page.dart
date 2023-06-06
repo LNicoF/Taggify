@@ -3,29 +3,16 @@ import 'package:taggify/model/song_repository.dart';
 
 import 'song_form_dialog.dart';
 import 'model/song.dart';
-import 'model/song_list.dart';
 
-class SongListPage extends StatefulWidget {
+class SongListPage extends StatelessWidget {
   final SongRepository songRepository ;
 
-  const SongListPage( { super.key, required this.songRepository } );
-
-  @override
-  State<SongListPage> createState() => _SongListPageState();
-}
-
-class _SongListPageState extends State<SongListPage> {
-  final songList = SongList();
-  late SongRepository songRepository ;
-
-  _SongListPageState() {
-    songRepository = widget.songRepository;
-  }
+  const SongListPage( {
+    super.key,
+    required this.songRepository
+  } ) ;
 
   void saveSong( final Song song ) {
-    setState(() {
-      songList.saveSong( song ) ;
-    });
   }
 
   @override
@@ -41,7 +28,15 @@ class _SongListPageState extends State<SongListPage> {
         ),
         body: ListView(
           children: [
-            for ( final song in songList.songs )
+            ListTile(
+              leading: IconButton(
+                onPressed: () {},
+                icon: const Icon( Icons.play_arrow ),
+              ),
+              title: const Text( 'Example song' ),
+              subtitle: const Text( 'path/of/file' ),
+            ),
+            for ( final song in songRepository.loadCollection() )
               ListTile(
                 leading: IconButton(
                   onPressed: () {},
@@ -50,7 +45,7 @@ class _SongListPageState extends State<SongListPage> {
 
                 title: Text( song.name ),
                 subtitle: Text( song.src ),
-              )
+              ),
           ],
         ),
       ) ;

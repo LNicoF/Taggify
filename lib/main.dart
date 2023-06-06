@@ -4,7 +4,23 @@ import 'package:taggify/model/song_repository.dart';
 import 'package:taggify/song_list_page.dart';
 
 void main() {
-  final db = JsonDb() ;
+  final db = JsonDb.fromString('''
+  {
+    "entities": {
+      "songs": [
+        {
+          "id": "1123467",
+          "name": "locura",
+          "src": "path/to/maddness"
+        }, {
+          "id": "4567898",
+          "name": "asdf",
+          "src": "path/to/irrelevance"
+        }
+      ]
+    }
+  }
+  ''') ;
   final songRepo = SongRepository( db ) ;
 
   runApp(MyApp(
@@ -45,7 +61,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text( title ),
       ),
-      body: null,
+      body: const Text( 'loucura' ),
     ) ;
   }
 }
