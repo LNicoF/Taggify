@@ -2,7 +2,7 @@
 
 ## install
 
-    Run the following commands on the git bash terminal
+Run the following commands on the git bash terminal
 ```
 flutter create taggify
 cd taggify

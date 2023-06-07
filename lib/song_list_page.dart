@@ -1,49 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:taggify/model/song_repository.dart';
 
 import 'song_form_dialog.dart';
 import 'model/song.dart';
-import 'model/song_list.dart';
 
-class SongListPage extends StatefulWidget {
-  const SongListPage({super.key});
+class SongListPage extends StatelessWidget {
+  final SongRepository songRepository ;
 
-  @override
-  State<SongListPage> createState() => _SongListPageState();
-}
-
-class _SongListPageState extends State<SongListPage> {
-  final songList = SongList();
+  const SongListPage( {
+    super.key,
+    required this.songRepository
+  } ) ;
 
   void saveSong( final Song song ) {
-    setState(() {
-      songList.saveSong( song ) ;
-    });
   }
 
   @override
-  Widget build(BuildContext context)
-    => Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text( 'Add song' ),
-        icon: const Icon( Icons.add ),
-        onPressed: () => showDialog(
-          context: context,
-          builder: ( context ) => SongFormDialog( saveSong: saveSong ),
+    Widget build(BuildContext context) {
+      return Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          label: const Text( 'Add song' ),
+          icon: const Icon( Icons.add ),
+          onPressed: () => showDialog(
+            context: context,
+            builder: ( context ) => SongFormDialog( saveSong: saveSong ),
+          ),
         ),
-      ),
-      body: ListView(
-        children: [
-          for ( final song in songList.songs )
+        body: ListView(
+          children: [
             ListTile(
               leading: IconButton(
                 onPressed: () {},
                 icon: const Icon( Icons.play_arrow ),
               ),
+              title: const Text( 'Example song' ),
+              subtitle: const Text( 'path/of/file' ),
+            ),
+            for ( final song in songRepository.loadCollection() )
+              ListTile(
+                leading: IconButton(
+                  onPressed: () {},
+                  icon: const Icon( Icons.play_arrow ),
+                ),
 
-              title: Text( song.name ),
-              subtitle: Text( song.src ),
-            )
-        ],
-      ),
-    ) ;
+                title: Text( song.name ),
+                subtitle: Text( song.src ),
+              ),
+          ],
+        ),
+      ) ;
+    }
 }

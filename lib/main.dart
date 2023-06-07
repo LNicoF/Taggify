@@ -1,11 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:taggify/json_database.dart';
+import 'package:taggify/model/song_repository.dart';
 import 'package:taggify/song_list_page.dart';
 
-void main()
-  => runApp(const MyApp());
+void main() {
+  final db = JsonDb.fromString('''
+  {
+    "entities": {
+      "songs": [
+        {
+          "id": "1123467",
+          "name": "locura",
+          "src": "path/to/maddness"
+        }, {
+          "id": "4567898",
+          "name": "asdf",
+          "src": "path/to/irrelevance"
+        }
+      ]
+    }
+  }
+  ''') ;
+  final songRepo = SongRepository( db ) ;
+
+  runApp(MyApp(
+    songRepository: songRepo,
+  ));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SongRepository songRepository ;
+
+  const MyApp({super.key, required this.songRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +40,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: const SongListPage(),
+      home: SongListPage(
+        songRepository: songRepository,
+      ),
     );
   }
 }
@@ -33,7 +61,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text( title ),
       ),
-      body: null,
+      body: const Text( 'loucura' ),
     ) ;
   }
 }
