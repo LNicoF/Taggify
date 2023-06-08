@@ -2,59 +2,73 @@ import 'package:uuid/uuid.dart';
 
 import '../framework/json_database.dart';
 
-class Repository {
-  final _entityName ;
-  final _entityPKName = 'id' ;
+typedef EntityData = Map< String, dynamic > ;
 
-  JsonDb _db ; // implement
+class Repository {
+  final String _entityName ;
+  final String _entityPKName ;
+
+  final JsonDb _db ; // implement
 
   static bool dontFilter( element ) => true ;
 
   Repository( {
     required JsonDb db,
-    required entityName
-  }) : _db = db, _entityName = entityName;
+    required entityName,
+    entityPkName = 'id',
+  }) :
+    _db = db,
+    _entityName = entityName,
+    _entityPKName = entityPkName ;
 
-  Song? loadFromId( final String id ) {
-    var songs = _db.getEntitySet( _entityName ) ;
-    var songWasntFound = false ;
-    var song = songs.firstWhere(
-      ( song ) => ( song[ 'id' ] as String ) == id,
+  Future<EntityData?> loadFromId( final String id ) async {
+    var entitySet = _db.getEntitySet( _entityName ) ;
+    var entityWasntFound = false ;
+    var entity = entitySet.firstWhere(
+      ( e ) => ( e[ 'id' ] as String ) == id,
       orElse: () {
-        songWasntFound = true ;
-        return songs.first ;
+        entityWasntFound = true ;
+        return entitySet.first ;
       }
     ) ;
-    if ( songWasntFound ) {
+    if ( entityWasntFound ) {
       return null ;
     }
 
-    return Song.populate( song ) ;
+    return entity ;
   }
 
-  List< Song > loadCollection( {
-    bool Function( Song ) filter = dontFilter,
-  } ) {
+  Future<List<EntityData>> loadCollection( {
+    bool Function( EntityData ) filter = dontFilter,
+  } ) async {
     return _db.getEntitySet( _entityName )
-             .map( Song.populate )
-             .where( filter )
-             .toList() ;
+              .where( filter )
+              .toList() ;
   }
 
-  Song save( Song song ) {
-    song.id ??= ( const Uuid() ).v4() ;
+  Future<EntityData> save( EntityData data ) async {
+    bool hasGeneratedId = false ;
+    if( data[ 'id' ] == null ) {
+      data[ 'id' ] = ( const Uuid() ).v4() ;
+      hasGeneratedId = true ;
+    }
+
     bool ok = _db.saveEntity(
       entityName: _entityName,
       pkName:     _entityPKName,
-      data:       song.dump()
+      data:       data
     ) ;
     if ( !ok ) {
-      song.id = null ;
+      if ( hasGeneratedId ) {
+        data.remove( 'id' ) ;
+      } else {
+        throw Exception ;
+      }
     }
-    return song ;
+    return data ;
   }
 
-  bool delete( Song song ) {
+  Future<bool> delete( EntityData entity ) async {
     return false ;
   }
 }

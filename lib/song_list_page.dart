@@ -17,45 +17,74 @@ class SongListPage extends StatefulWidget {
 }
 
 class _SongListPageState extends State<SongListPage> {
+  late Future< List< Song > > _songList ;
+
+  @override
+  void initState() {
+    super.initState();
+    reloadList() ;
+  }
+
   void saveSong( Song song ) {
-    setState(() {
-      song = widget.songRepository.save( song ) ;
-    });
+    ( () async {
+      song = await widget.songRepository.save( song ) ;
+      setState(() {
+        reloadList() ;
+      });
+    } )() ;
+  }
+
+  void reloadList() {
+    _songList = widget.songRepository.loadAll() ;
   }
 
   @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          label: const Text( 'Add song' ),
-          icon: const Icon( Icons.add ),
-          onPressed: () => showDialog(
-            context: context,
-            builder: ( context ) => SongFormDialog( saveSong: saveSong ),
-          ),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text( 'Add song' ),
+        icon: const Icon( Icons.add ),
+        onPressed: () => showDialog(
+          context: context,
+          builder: ( context ) => SongFormDialog( saveSong: saveSong ),
         ),
-        body: ListView(
-          children: [
-            ListTile(
-              leading: IconButton(
-                onPressed: () {},
-                icon: const Icon( Icons.play_arrow ),
-              ),
-              title: const Text( 'Example song' ),
-              subtitle: const Text( 'path/of/file' ),
-            ),
-            for ( final song in widget.songRepository.loadCollection() )
-              ListTile(
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: const Icon( Icons.play_arrow ),
-                ),
+      ),
+      body: FutureBuilder(
+        future: _songList,
+        builder: ( context, songListSnapshot ) {
+          if ( songListSnapshot.hasData ) {
+            return buildListView( songListSnapshot.data! ) ;
+          }
+          return const Center(
+            child: Text( 'not loaded' ),
+          ) ;
+        },
+      ),
+    ) ;
+  }
 
-                title: Text( song.name ),
-                subtitle: Text( song.src ),
-              ),
-          ],
+  ListView buildListView( List< Song > songList ) {
+    return ListView(
+      children: [
+        ListTile(
+          leading: IconButton(
+            onPressed: () {},
+            icon: const Icon( Icons.play_arrow ),
+          ),
+          title: const Text( 'Example song' ),
+          subtitle: const Text( 'path/of/file' ),
         ),
-      ) ;
-    }
+        for ( final song in songList )
+          ListTile(
+            leading: IconButton(
+              onPressed: () {},
+              icon: const Icon( Icons.play_arrow ),
+            ),
+
+            title: Text( song.name ),
+            subtitle: Text( song.src ),
+          ),
+      ],
+    );
+  }
 }
