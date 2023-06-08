@@ -10,11 +10,9 @@ class Song {
     src =  data[ 'src' ] as String ;
   }
 
-  Map< String, dynamic > dump() {
-    return {
-      'id':   id,
-      'name': name,
-      'src':  src,
-    } ;
-  }
+  Map< String, dynamic > dump() => {
+    'id':   id,
+    'name': name,
+    'src':  src,
+  } ;
 }

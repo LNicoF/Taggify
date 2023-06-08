@@ -1,20 +1,22 @@
 import 'package:uuid/uuid.dart';
 
 import '../framework/json_database.dart';
-import 'song.dart';
 
-class SongRepository {
-  static const _entityName   = 'songs' ;
-  static const _entityPKName = 'id' ;
+class Repository {
+  final _entityName ;
+  final _entityPKName = 'id' ;
 
-  JsonDb db ; // implement
+  JsonDb _db ; // implement
 
   static bool dontFilter( element ) => true ;
 
-  SongRepository( this.db ) ;
+  Repository( {
+    required JsonDb db,
+    required entityName
+  }) : _db = db, _entityName = entityName;
 
   Song? loadFromId( final String id ) {
-    var songs = db.getEntitySet( _entityName ) ;
+    var songs = _db.getEntitySet( _entityName ) ;
     var songWasntFound = false ;
     var song = songs.firstWhere(
       ( song ) => ( song[ 'id' ] as String ) == id,
@@ -33,7 +35,7 @@ class SongRepository {
   List< Song > loadCollection( {
     bool Function( Song ) filter = dontFilter,
   } ) {
-    return db.getEntitySet( _entityName )
+    return _db.getEntitySet( _entityName )
              .map( Song.populate )
              .where( filter )
              .toList() ;
@@ -41,7 +43,7 @@ class SongRepository {
 
   Song save( Song song ) {
     song.id ??= ( const Uuid() ).v4() ;
-    bool ok = db.saveEntity(
+    bool ok = _db.saveEntity(
       entityName: _entityName,
       pkName:     _entityPKName,
       data:       song.dump()

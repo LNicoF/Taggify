@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taggify/json_database.dart';
+import 'package:taggify/framework/json_database.dart';
 import 'package:taggify/model/song_repository.dart';
 import 'package:taggify/song_list_page.dart';
 
