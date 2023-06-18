@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:taggify/model/tag.dart';
-import 'package:taggify/model/tag_repository.dart';
+import 'model/tag.dart';
+import 'model/tag_repository.dart';
 
 class TagsListPage extends StatelessWidget {
   final TagRepository tagRepository ;

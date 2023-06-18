@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taggify/model/song_repository.dart';
+import 'model/song_repository.dart';
 
 import 'song_form_dialog.dart';
 import 'model/song.dart';

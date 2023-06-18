@@ -1,8 +1,8 @@
-import 'package:taggify/framework/json_database.dart';
-import 'package:taggify/framework/repository.dart';
-import 'package:taggify/model/song.dart';
-import 'package:taggify/model/song_tag_repository.dart';
-import 'package:taggify/model/tag.dart';
+import '../framework/json_database.dart';
+import '../framework/repository.dart';
+import '../model/song.dart';
+import '../model/song_tag_repository.dart';
+import '../model/tag.dart';
 
 class TagRepository {
   static const _entityName   = 'tags' ;

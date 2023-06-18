@@ -1,6 +1,6 @@
-import 'package:taggify/model/song.dart';
-import 'package:taggify/model/song_tag.dart';
-import 'package:taggify/model/song_tag_repository.dart';
+import '../model/song.dart';
+import '../model/song_tag.dart';
+import '../model/song_tag_repository.dart';
 
 class Tag {
   String? id ;

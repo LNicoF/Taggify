@@ -1,6 +1,6 @@
-import 'package:taggify/framework/repository.dart';
-import 'package:taggify/model/song_tag.dart';
-import 'package:taggify/model/tag.dart';
+import '../framework/repository.dart';
+import '../model/song_tag.dart';
+import '../model/tag.dart';
 import '../framework/json_database.dart';
 import 'song.dart';
 
