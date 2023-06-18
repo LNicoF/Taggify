@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:taggify/framework/json_database.dart';
 import 'package:taggify/model/song_repository.dart';
-import 'package:taggify/song_list_page.dart';
+import 'package:taggify/model/tag_repository.dart';
+import 'package:taggify/tags_list_page.dart';
 
 void main() {
   final db = JsonDb.fromString('''
@@ -12,26 +13,44 @@ void main() {
           "id": "1123467",
           "name": "locura",
           "src": "path/to/maddness"
-        }, {
+        },
+        {
           "id": "4567898",
           "name": "asdf",
           "src": "path/to/irrelevance"
+        }
+      ],
+      "tags": [
+        {
+          "id": "678934",
+          "name": "energic shit"
+        },
+        {
+          "id": "917239",
+          "name": "sad shit"
         }
       ]
     }
   }
   ''') ;
   final songRepo = SongRepository( db ) ;
+  final tagRepo  = TagRepository( db ) ;
 
   runApp(MyApp(
     songRepository: songRepo,
+    tagRepository: tagRepo,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final SongRepository songRepository ;
+  final TagRepository  tagRepository ;
 
-  const MyApp({super.key, required this.songRepository});
+  const MyApp({
+    super.key,
+    required this.songRepository,
+    required this.tagRepository,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,28 +59,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: SongListPage(
-        songRepository: songRepository,
+      home: TagsListPage(
+        tagRepository: tagRepository,
       ),
     );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  final String title ;
-
-  const MyHomePage( {
-    super.key,
-    required this.title,
-  } );
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text( title ),
-      ),
-      body: const Text( 'loucura' ),
-    ) ;
   }
 }
