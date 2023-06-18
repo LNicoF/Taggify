@@ -8,8 +8,8 @@ class TagRepository {
   static const _entityName   = 'tags' ;
   static const _entityPKName = 'id' ;
 
-  JsonDb     _db ;
-  Repository _repository ;
+  final JsonDb     _db ;
+  final Repository _repository ;
 
   TagRepository( final JsonDb db ) :
     _db         = db,
