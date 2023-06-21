@@ -27,7 +27,7 @@ class TagRepository {
       return Tag.populate( data ) ;
   }
 
-  Future< List< Tag > > loadAllForTag( final Song song ) async {
+  Future< List< Tag > > loadAllForSong( final Song song ) async {
     final songTagRepository = SongTagRepository( _db ) ;
     final allSongTags = await songTagRepository.loadAllForSong( song ) ;
     return < Tag >[

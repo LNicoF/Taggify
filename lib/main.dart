@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:taggify/framework/json_database.dart';
+import 'package:taggify/model/song.dart';
 import 'package:taggify/model/song_repository.dart';
 import 'package:taggify/model/tag_repository.dart';
-import 'package:taggify/tags_list_page.dart';
+import 'package:taggify/song_details_page.dart';
 
-void main() {
+void main() async {
   final db = JsonDb.fromString('''
   {
     "entities": {
@@ -29,27 +32,47 @@ void main() {
           "id": "917239",
           "name": "sad shit"
         }
+      ],
+      "song_tag": [
+        {
+          "id": "1290983",
+          "song_id": "1123467",
+          "tag_id": "678934"
+        },
+        {
+          "id": "12381119",
+          "song_id": "1123467",
+          "tag_id": "4567898"
+        }
       ]
     }
   }
   ''') ;
-  final songRepo = SongRepository( db ) ;
-  final tagRepo  = TagRepository( db ) ;
+  final songRepo    = SongRepository( db ) ;
+  final tagRepo     = TagRepository( db ) ;
 
-  runApp(MyApp(
-    songRepository: songRepo,
-    tagRepository: tagRepo,
+  final exampleSong = await songRepo.loadFromId( "1123467" ) ;
+
+  print( await tagRepo.loadAllForSong( exampleSong! ) ) ;
+
+  return ;
+  runApp( MyApp(
+    songRepository:    songRepo,
+    tagRepository:     tagRepo,
+    exampleSong:       exampleSong,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final SongRepository songRepository ;
-  final TagRepository  tagRepository ;
+  final SongRepository    songRepository ;
+  final TagRepository     tagRepository ;
+  final Song              exampleSong ;
 
   const MyApp({
     super.key,
     required this.songRepository,
     required this.tagRepository,
+    required this.exampleSong,
   });
 
   @override
@@ -59,8 +82,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: TagsListPage(
-        tagRepository: tagRepository,
+      home: SongDetailsPage(
+        song: exampleSong,
+        tagRepository: tagRepository
       ),
     );
   }

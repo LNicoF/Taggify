@@ -66,16 +66,11 @@ class _SongListPageState extends State<SongListPage> {
   ListView buildListView( List< Song > songList ) {
     return ListView(
       children: [
-        ListTile(
-          leading: IconButton(
-            onPressed: () {},
-            icon: const Icon( Icons.play_arrow ),
-          ),
-          title: const Text( 'Example song' ),
-          subtitle: const Text( 'path/of/file' ),
-        ),
         for ( final song in songList )
           ListTile(
+            onTap: () {
+              
+            },
             leading: IconButton(
               onPressed: () {},
               icon: const Icon( Icons.play_arrow ),

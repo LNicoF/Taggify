@@ -25,7 +25,9 @@ class Repository {
     var entitySet = _db.getEntitySet( _entityName ) ;
     var entityWasntFound = false ;
     var entity = entitySet.firstWhere(
-      ( e ) => ( e[ 'id' ] as String ) == id,
+      ( e ) {
+        return ( e[ 'id' ] as String ) == id ;
+      },
       orElse: () {
         entityWasntFound = true ;
         return entitySet.first ;
