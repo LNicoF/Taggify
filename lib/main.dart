@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:taggify/app.dart';
 import 'package:taggify/framework/json_database.dart';
 import 'package:taggify/model/song_repository.dart';
 import 'package:taggify/model/tag_repository.dart';
-import 'package:taggify/tags_list_page.dart';
 
 void main() {
   final db = JsonDb.fromString('''
@@ -36,32 +36,8 @@ void main() {
   final songRepo = SongRepository( db ) ;
   final tagRepo  = TagRepository( db ) ;
 
-  runApp(MyApp(
+  runApp( App(
     songRepository: songRepo,
     tagRepository: tagRepo,
-  ));
-}
-
-class MyApp extends StatelessWidget {
-  final SongRepository songRepository ;
-  final TagRepository  tagRepository ;
-
-  const MyApp({
-    super.key,
-    required this.songRepository,
-    required this.tagRepository,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      home: TagsListPage(
-        tagRepository: tagRepository,
-      ),
-    );
-  }
+  ) );
 }
