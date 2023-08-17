@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-import '../framework/json_database.dart';
+import 'json_database.dart';
 
 typedef EntityData = Map< String, dynamic > ;
 
