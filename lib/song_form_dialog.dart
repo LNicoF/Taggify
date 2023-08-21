@@ -18,17 +18,24 @@ class SongFormDialog extends StatefulWidget {
 }
 
 class _SongFormDialogState extends State<SongFormDialog> {
-  late var song = widget.fromSong ?? Song.blank() ;
-  var _canSave = false ;
+  late Song song ;
+  late bool enabled ;
 
-  void enableSaving() {
-    if ( song.name == '' || song.src == '' ) {
-      if ( _canSave ) {
-        setState( () => _canSave = false );
-      }
-    } else {
-      setState( () => _canSave = true );
+  bool get canSave => song.name != '' && song.src != '' ;
+
+  void updateState() {
+    if ( enabled != canSave ) {
+      setState(() {
+        enabled = !enabled ;
+      });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    song = widget.fromSong ?? Song.blank() ;
+    enabled = canSave ;
   }
 
   @override
@@ -43,18 +50,22 @@ class _SongFormDialogState extends State<SongFormDialog> {
           children: [
             TextInputField(
               label: const Text( 'Song title' ),
+              initialText: song.name,
+
               onChanged: ( textInput ) {
                 song.name = textInput ;
-                enableSaving() ;
+                updateState() ;
               }
             ),
             const SizedBox( height: 16 ),
 
             TextInputField(
               label: const Text( 'Src' ),
+              initialText: song.src,
+
               onChanged: ( inputText ) {
                 song.src = inputText ;
-                enableSaving() ;
+                updateState() ;
               },
             ),
           ],
@@ -73,7 +84,7 @@ class _SongFormDialogState extends State<SongFormDialog> {
         ),
 
         TextButton(
-          onPressed: _canSave ? () {
+          onPressed: canSave ? () {
             if ( song.name.isEmpty ) {
               return ;
             }

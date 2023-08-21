@@ -75,7 +75,8 @@ class _SongsPageState extends State<SongsPage> {
 
       body: SongListBuilder(
         songs: _songs,
-        deleteSong: ( song ) => _deleteSong( song ),
+        deleteSong: _deleteSong,
+        saveSong: _saveSong,
       ),
     ) ;
   }
@@ -86,10 +87,12 @@ class SongListBuilder extends StatelessWidget {
     super.key,
     required this.songs,
     required this.deleteSong,
+    required this.saveSong,
   }) ;
 
-  final Future<List<Song>> songs;
+  final Future< List< Song > > songs;
   final void Function( Song song ) deleteSong ;
+  final void Function( Song song ) saveSong ;
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +114,7 @@ class SongListBuilder extends StatelessWidget {
           SongListTile(
             song: song,
             deleteSong: deleteSong,
+            saveSong: saveSong,
           ),
       ],
     );
