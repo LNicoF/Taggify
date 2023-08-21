@@ -5,18 +5,20 @@ import 'model/song.dart';
 
 class SongFormDialog extends StatefulWidget {
   final void Function( Song ) saveSong ;
+  final Song? fromSong ;
 
   const SongFormDialog( {
     super.key,
     required this.saveSong,
-  } );
+    this.fromSong,
+  } ) ;
 
   @override
   State<SongFormDialog> createState() => _SongFormDialogState();
 }
 
 class _SongFormDialogState extends State<SongFormDialog> {
-  var song = Song( '', '' ) ;
+  late var song = widget.fromSong ?? Song.blank() ;
   var _canSave = false ;
 
   void enableSaving() {

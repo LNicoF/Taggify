@@ -37,7 +37,7 @@ class JsonDb {
       return false;
     }
 
-    var entity = _findEntity(
+    var entity = findEntity(
       entityName: entityName,
       attrName: pkName,
       attrValue: data[pkName] as String,
@@ -65,7 +65,7 @@ class JsonDb {
   /// If the entity with the attribute named [attrName]
   /// and value [attrValue] exists, returns the entity JsonObject;
   /// otherwise, returns null
-  JsonObject? _findEntity({
+  JsonObject? findEntity({
     required String entityName,
     required String attrName,
     required String attrValue,
@@ -77,6 +77,28 @@ class JsonDb {
       attrName: attrName,
       attrValue: attrValue
     );
+  }
+
+  /// Deletes the entity where [attrName] equals [attrValue]
+  /// and returns true if the operation succeds
+  bool deleteEntity( {
+    required String entityName,
+    required attrName,
+    required attrValue,
+  } ) {
+    final entity = findEntity(
+      entityName: entityName,
+      attrName:   attrName,
+      attrValue:  attrValue,
+    ) ;
+
+    if ( entity == null ) {
+      return false ;
+    }
+
+    return ( ( content[ 'entities' ] as JsonObject )
+      [ entityName ] as List )
+      .remove( entity ) ;
   }
 }
 

@@ -50,7 +50,7 @@ class SongRepository {
     return Song.populate( data ) ;
   }
 
-  Future<bool> delete( EntityData entity ) async {
-    return false ;
+  Future<bool> delete( String songId ) async {
+    return await _repository.delete( songId ) ;
   }
 }

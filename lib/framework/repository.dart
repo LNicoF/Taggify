@@ -68,7 +68,11 @@ class Repository {
     return data ;
   }
 
-  Future<bool> delete( EntityData entity ) async {
-    return false ;
+  Future<bool> delete( String id ) async {
+    return _db.deleteEntity(
+      entityName: _entityName,
+      attrName:   _entityPKName,
+      attrValue:  id,
+    ) ;
   }
 }
