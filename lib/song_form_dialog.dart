@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:taggify/text_input_field.dart';
 
 import 'model/song.dart';
 
-class SongFormDialog extends StatelessWidget {
+class SongFormDialog extends StatefulWidget {
   final void Function( Song ) saveSong ;
 
   const SongFormDialog( {
@@ -11,92 +12,78 @@ class SongFormDialog extends StatelessWidget {
   } );
 
   @override
+  State<SongFormDialog> createState() => _SongFormDialogState();
+}
+
+class _SongFormDialogState extends State<SongFormDialog> {
+  var song = Song( '', '' ) ;
+  var _canSave = false ;
+
+  void enableSaving() {
+    if ( song.name == '' || song.src == '' ) {
+      if ( _canSave ) {
+        setState( () => _canSave = false );
+      }
+    } else {
+      setState( () => _canSave = true );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var song = Song( "", "" ) ;
+    final saveSong = widget.saveSong ;
 
-    return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all( 25 ),
+    return AlertDialog(
+      title: const Text( 'Add new song' ),
+
+      content: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Add new song',
-              style: Theme.of( context ).textTheme.headlineSmall,
-            ),
-            const SizedBox( height: 30 ),
-
             TextInputField(
               label: const Text( 'Song title' ),
               onChanged: ( textInput ) {
                 song.name = textInput ;
+                enableSaving() ;
               }
             ),
-            const SizedBox( height: 15 ),
+            const SizedBox( height: 16 ),
 
             TextInputField(
               label: const Text( 'Src' ),
               onChanged: ( inputText ) {
                 song.src = inputText ;
+                enableSaving() ;
               },
-            ),
-
-            const Expanded(
-              child: SizedBox()
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop( context ) ;
-                  },
-                  style: TextButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.all( 2 ),
-                  ),
-                  child: const Text( 'Cancel' ),
-                ),
-                const SizedBox( width: 10 ),
-
-                FilledButton(
-                  onPressed: () {
-                    if ( song.name.isEmpty ) {
-                      return ;
-                    }
-                    saveSong( song ) ;
-                    Navigator.pop( context ) ;
-                  },
-                  child: const Text( 'Save' ),
-                ),
-              ],
             ),
           ],
         ),
       ),
+
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop( context ) ;
+          },
+
+          child: const Text( 'Cancel',
+            textAlign: TextAlign.end,
+          ),
+        ),
+
+        TextButton(
+          onPressed: _canSave ? () {
+            if ( song.name.isEmpty ) {
+              return ;
+            }
+            saveSong( song ) ;
+            Navigator.pop( context ) ;
+          } : null,
+
+          child: const Text( 'Save',
+            textAlign: TextAlign.end,
+          ),
+        ),
+      ],
     ) ;
-  }
-}
-
-class TextInputField extends StatelessWidget {
-  final Widget label;
-  final Function( String )? onChanged;
-
-  const TextInputField({
-    super.key,
-    required this.label,
-    this.onChanged,
-  } );
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        label: label,
-        border: const OutlineInputBorder(),
-      ),
-      onChanged: onChanged,
-    );
   }
 }
