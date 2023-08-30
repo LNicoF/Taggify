@@ -7,6 +7,7 @@ import 'package:taggify/song_list_tile.dart';
 class SongsPage extends StatefulWidget {
   final SongRepository songRepository ;
   final NavigationBar? navigationBar ;
+  final AppBar?        appBar ;
 
   static const tab = NavigationDestination(
     label: 'Songs',
@@ -17,6 +18,7 @@ class SongsPage extends StatefulWidget {
     super.key,
     required this.songRepository,
     this.navigationBar,
+    this.appBar,
   } ) ;
 
   @override
@@ -25,7 +27,8 @@ class SongsPage extends StatefulWidget {
 
 class _SongsPageState extends State<SongsPage> {
   late final SongRepository _songRepository = widget.songRepository ;
-  late final NavigationBar? _navigationBar = widget.navigationBar ;
+  late final NavigationBar? _navigationBar  = widget.navigationBar ;
+  late final AppBar?        _appBar         = widget.appBar ;
 
   Future< List< Song > > _songs = Future.value( [] ) ;
 
@@ -61,6 +64,7 @@ class _SongsPageState extends State<SongsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _navigationBar,
+      appBar: _appBar,
 
       floatingActionButton: FloatingActionButton.extended(
         label: const Text( 'Add song' ),
