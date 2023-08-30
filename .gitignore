@@ -51,5 +51,7 @@ pubspec.lock
 web/
 windows/
 
+flutter_jank*
+
 .vscode
 flutter.sh

@@ -63,7 +63,7 @@ class _SongsPageState extends State<SongsPage> {
       bottomNavigationBar: _navigationBar,
 
       floatingActionButton: FloatingActionButton.extended(
-        label: const Text( 'Add songg' ),
+        label: const Text( 'Add song' ),
         icon: const Icon( Icons.add ),
         onPressed: () {
           showDialog(

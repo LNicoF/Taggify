@@ -21,7 +21,7 @@ class _SongFormDialogState extends State<SongFormDialog> {
   late Song song ;
   late bool enabled ;
 
-  bool get canSave => song.name != '' && song.src != '' ;
+  bool get canSave => song.name.isNotEmpty && song.src.isNotEmpty ;
 
   void updateState() {
     if ( enabled != canSave ) {
@@ -85,9 +85,6 @@ class _SongFormDialogState extends State<SongFormDialog> {
 
         TextButton(
           onPressed: canSave ? () {
-            if ( song.name.isEmpty ) {
-              return ;
-            }
             saveSong( song ) ;
             Navigator.pop( context ) ;
           } : null,
