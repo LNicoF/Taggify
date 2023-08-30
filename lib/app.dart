@@ -37,6 +37,11 @@ class _AppState extends State<App> {
     onDestinationSelected: ( i ) { _changeTab( i ) ; },
   ) ;
 
+  AppBar get _appBar => AppBar(
+    title: Text( _tabs[ _tabIndex ].label ),
+    centerTitle: true,
+  ) ;
+
   late final _pageBuilders = < Widget Function() >[
     () => QueuePage(
       navigationBar: _navigationBar,
@@ -49,6 +54,7 @@ class _AppState extends State<App> {
 
     () => SongsPage(
       songRepository: widget._songRepository,
+      appBar: _appBar,
       navigationBar: _navigationBar,
     ),
   ] ;
@@ -65,7 +71,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        useMaterial3: true,
       ),
       home: buildPage(),
     );

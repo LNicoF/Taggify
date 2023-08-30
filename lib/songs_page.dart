@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:taggify/model/song.dart';
 import 'package:taggify/model/song_repository.dart';
 import 'package:taggify/song_form_dialog.dart';
+import 'package:taggify/song_list_tile.dart';
 
 class SongsPage extends StatefulWidget {
   final SongRepository songRepository ;
   final NavigationBar? navigationBar ;
+  final AppBar?        appBar ;
 
   static const tab = NavigationDestination(
     label: 'Songs',
@@ -16,6 +18,7 @@ class SongsPage extends StatefulWidget {
     super.key,
     required this.songRepository,
     this.navigationBar,
+    this.appBar,
   } ) ;
 
   @override
@@ -24,7 +27,8 @@ class SongsPage extends StatefulWidget {
 
 class _SongsPageState extends State<SongsPage> {
   late final SongRepository _songRepository = widget.songRepository ;
-  late final NavigationBar? _navigationBar = widget.navigationBar ;
+  late final NavigationBar? _navigationBar  = widget.navigationBar ;
+  late final AppBar?        _appBar         = widget.appBar ;
 
   Future< List< Song > > _songs = Future.value( [] ) ;
 
@@ -47,11 +51,21 @@ class _SongsPageState extends State<SongsPage> {
     } )() ;
   }
 
+  void _deleteSong( Song song ) {
+    ( () async {
+      await _songRepository.delete( song.id! ) ;
+      setState(() {
+        _reloadList() ;
+      });
+    } )() ;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _navigationBar,
-      
+      appBar: _appBar,
+
       floatingActionButton: FloatingActionButton.extended(
         label: const Text( 'Add song' ),
         icon: const Icon( Icons.add ),
@@ -63,7 +77,11 @@ class _SongsPageState extends State<SongsPage> {
         },
       ),
 
-      body: SongListBuilder(songs: _songs),
+      body: SongListBuilder(
+        songs: _songs,
+        deleteSong: _deleteSong,
+        saveSong: _saveSong,
+      ),
     ) ;
   }
 }
@@ -71,15 +89,19 @@ class _SongsPageState extends State<SongsPage> {
 class SongListBuilder extends StatelessWidget {
   const SongListBuilder({
     super.key,
-    required Future<List<Song>> songs,
-  }) : _songs = songs;
+    required this.songs,
+    required this.deleteSong,
+    required this.saveSong,
+  }) ;
 
-  final Future<List<Song>> _songs;
+  final Future< List< Song > > songs;
+  final void Function( Song song ) deleteSong ;
+  final void Function( Song song ) saveSong ;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _songs,
+      future: songs,
       builder: ( context, songListSnapshot ) {
         if ( songListSnapshot.hasData ) {
           return buildListView( songListSnapshot.data! ) ;
@@ -93,14 +115,10 @@ class SongListBuilder extends StatelessWidget {
     return ListView(
       children: [
         for ( final song in songList )
-          ListTile(
-            leading: IconButton(
-              onPressed: () {},
-              icon: const Icon( Icons.play_arrow ),
-            ),
-
-            title: Text( song.name ),
-            subtitle: Text( song.src ),
+          SongListTile(
+            song: song,
+            deleteSong: deleteSong,
+            saveSong: saveSong,
           ),
       ],
     );

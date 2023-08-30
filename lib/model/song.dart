@@ -6,6 +6,8 @@ class Song {
   String? id ;
   String name, src ;
 
+  Song.blank() : name = '', src = '' ;
+
   Song( this.name, this.src ) ;
 
   Song.populate( Map< String, dynamic > data ) :

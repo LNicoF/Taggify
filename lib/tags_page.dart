@@ -18,7 +18,7 @@ class TagsPage extends StatelessWidget {
     NavigationBar? navigationBar,
   } ) : _tagRepository = tagRepository,
         _navigationBar = navigationBar ;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
