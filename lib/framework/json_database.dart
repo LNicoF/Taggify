@@ -6,8 +6,6 @@ typedef JsonObject = Map<String, dynamic>;
 class JsonDb {
   JsonObject content = {};
 
-  JsonDb();
-
   JsonDb.fromString(final String initialContent) {
     content = jsonDecode(initialContent) as JsonObject;
   }
@@ -23,11 +21,11 @@ class JsonDb {
   /// Returns the [entityName] entity set
   Set<JsonObject> getEntitySet(final String entityName) {
     final operation = _DbOperation(content: content, entityName: entityName) ;
-    return Set.of( operation.entityList.map((e) => e as JsonObject)) ;
+    return Set.of( operation.entityList?.map((e) => e as JsonObject) ?? [] ) ;
   }
 
   /// Saves the data in [data] into the entity set
-  /// [entityName], which's primary key is [pkName]
+  /// [entityName], with the primary key [pkName]
   bool saveEntity({
     required String     entityName,
     required String     pkName,
@@ -40,7 +38,7 @@ class JsonDb {
     var entity = findEntity(
       entityName: entityName,
       attrName: pkName,
-      attrValue: data[pkName] as String,
+      attrValue: data[pkName],
     );
 
     if (entity == null) {
@@ -68,7 +66,7 @@ class JsonDb {
   JsonObject? findEntity({
     required String entityName,
     required String attrName,
-    required String attrValue,
+    required dynamic attrValue,
   }) {
     return _DbOperation(
       content: content,
@@ -106,8 +104,8 @@ class _DbOperation {
   JsonObject content;
   final String entityName;
 
-  List get entityList
-    => ( (content['entities'] as JsonObject)[entityName] as List ) ;
+  List? get entityList
+    => ( (content['entities'] as JsonObject)[entityName] as List? ) ;
 
   _DbOperation({
     required this.content,
@@ -116,27 +114,31 @@ class _DbOperation {
 
   JsonObject? findEntity({
     required String attrName,
-    required String attrValue,
+    required dynamic attrValue,
   }) {
     var entityAlreadyExists = true;
 
     var entityFound =
-        entityList.firstWhere((row) => row[attrName] == attrValue, orElse: () {
+        entityList?.firstWhere((row) => row[attrName] == attrValue, orElse: () {
       entityAlreadyExists = false;
-      return entityList.first;
+      return null;
     });
 
     return entityAlreadyExists ? entityFound : null;
   }
 
   bool insert( JsonObject data, { required String pkName } ) {
-    if ( entityList.where(
+    if ( entityList == null ) {
+      return false ;
+    }
+
+    if ( entityList!.where(
       ( element ) => element[ pkName ] == data[ pkName ]
     ).isNotEmpty ) {
       return false ;
     }
 
-    entityList.add( data ) ;
+    entityList!.add( data ) ;
     return true ;
   }
 }
