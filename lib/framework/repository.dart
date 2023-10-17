@@ -21,11 +21,11 @@ class Repository {
     _entityName = entityName,
     _entityPKName = entityPkName ;
 
-  Future<EntityData?> loadFromId( final String id ) async {
+  Future<EntityData?> loadFromId( final dynamic id ) async {
     var entitySet = _db.getEntitySet( _entityName ) ;
     var entityWasntFound = false ;
     var entity = entitySet.firstWhere(
-      ( e ) => ( e[ 'id' ] as String ) == id,
+      ( e ) => e[ 'id' ] == id,
       orElse: () {
         entityWasntFound = true ;
         return entitySet.first ;
@@ -48,8 +48,8 @@ class Repository {
 
   Future<EntityData> save( EntityData data ) async {
     bool hasGeneratedId = false ;
-    if( data[ 'id' ] == null ) {
-      data[ 'id' ] = ( const Uuid() ).v4() ;
+    if( data[ _entityPKName ] == null ) {
+      data[ _entityPKName ] = ( const Uuid() ).v4() ;
       hasGeneratedId = true ;
     }
 
@@ -62,7 +62,7 @@ class Repository {
       if ( hasGeneratedId ) {
         data.remove( 'id' ) ;
       } else {
-        throw Exception ;
+        throw Exception( 'Could not save entity' ) ;
       }
     }
     return data ;
