@@ -8,7 +8,7 @@ class Repository {
   final String _entityName ;
   final String _entityPKName ;
 
-  final JsonDb _db ; // implement
+  final JsonDb _db ;
 
   static bool dontFilter( element ) => true ;
 

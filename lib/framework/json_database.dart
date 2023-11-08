@@ -24,7 +24,7 @@ class JsonDb {
     return Set.of( operation.entityList?.map((e) => e as JsonObject) ?? [] ) ;
   }
 
-  /// Saves the data in [data] into the entity set
+  /// Saves the [data] into the entity set
   /// [entityName], with the primary key [pkName]
   bool saveEntity({
     required String     entityName,
