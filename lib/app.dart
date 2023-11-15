@@ -29,7 +29,9 @@ class _AppState extends State<App> {
   ] ;
 
   NavigationBar get _navigationBar => NavigationBar(
+    key: const Key( 'navigation_bar' ),
     destinations: _tabs.map( ( tab ) => NavigationDestination(
+      key: Key( 'navigate_${tab.label.toLowerCase()}'),
       icon: tab.icon,
       label: tab.label,
     ) ).toList(),
