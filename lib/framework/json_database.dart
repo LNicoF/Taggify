@@ -21,13 +21,23 @@ class JsonDb {
   }
 
   /// Returns the [entityName] entity set
+  /// Pre: entityName.length > 0 and exists content['entities'][entityName]
+  /// Post: returns content[ 'entities' ][ entityName ]
   Set<JsonObject> getEntitySet(final String entityName) {
+    if ( entityName.isEmpty || content[ 'entities' ]?[ entityName ] == null ) {
+      throw new Exception( 'Entity name cannot be empty') ;
+    }
     final operation = _DbOperation(content: content, entityName: entityName) ;
     return Set.of( operation.entityList.map((e) => e as JsonObject)) ;
   }
 
   /// Saves the data in [data] into the entity set
   /// [entityName], which's primary key is [pkName]
+  /// Pre: entityName.length > 0
+  ///      and exists content['entities'][entityName]
+  ///      and exists data[ pkName ]
+  /// Post: content[ 'entities' ][ entityName ] contains data
+  ///       returns true
   bool saveEntity({
     required String     entityName,
     required String     pkName,
@@ -65,6 +75,7 @@ class JsonDb {
   /// If the entity with the attribute named [attrName]
   /// and value [attrValue] exists, returns the entity JsonObject;
   /// otherwise, returns null
+  /// Pre: entityName.length > 0 and attrName.length > 0
   JsonObject? findEntity({
     required String entityName,
     required String attrName,
@@ -81,6 +92,7 @@ class JsonDb {
 
   /// Deletes the entity where [attrName] equals [attrValue]
   /// and returns true if the operation succeds
+  /// Pre: entityName.length > 0 and attrName.length > 0
   bool deleteEntity( {
     required String entityName,
     required attrName,
@@ -102,9 +114,12 @@ class JsonDb {
   }
 }
 
+/// Inv: content[ 'entities'][ entityName ] exists
 class _DbOperation {
   JsonObject content;
   final String entityName;
+
+  void _checkInv() => assert( content[ 'entities' ]?[ entityName ] != null ) ;
 
   List get entityList
     => ( (content['entities'] as JsonObject)[entityName] as List ) ;
@@ -112,12 +127,15 @@ class _DbOperation {
   _DbOperation({
     required this.content,
     required this.entityName,
-  });
+  }) {
+    _checkInv() ;
+  };
 
   JsonObject? findEntity({
     required String attrName,
     required String attrValue,
   }) {
+    _checkInv()
     var entityAlreadyExists = true;
 
     var entityFound =
@@ -126,10 +144,12 @@ class _DbOperation {
       return entityList.first;
     });
 
+    _checkInv()
     return entityAlreadyExists ? entityFound : null;
   }
 
   bool insert( JsonObject data, { required String pkName } ) {
+    _checkInv()
     if ( entityList.where(
       ( element ) => element[ pkName ] == data[ pkName ]
     ).isNotEmpty ) {
@@ -137,6 +157,7 @@ class _DbOperation {
     }
 
     entityList.add( data ) ;
+    _checkInv()
     return true ;
   }
 }
